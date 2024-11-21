@@ -1,0 +1,13 @@
+# Fichier qui comporte les idées et le travail restant du groupe
+# Refuser un prêt si tx endettement >33% ou alors afficher max emprunt possible
+#Mettre slider pour la durée du pret ( à discuter ) (1-3-5-10-15-20)
+#Mettre les box de remplissage pour le taux, montant embrunt revenu 
+#
+
+
+#Pour le coté visuel
+#Essayer de s'inspirer des simulateurs des banques en lignes
+
+#Bonus:
+Faire la comparaison entre qqn qui reste locataire et qqn qui achete
+
