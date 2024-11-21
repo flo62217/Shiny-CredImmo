@@ -6,9 +6,13 @@
 #
 #    https://shiny.posit.co/
 #
-
+#Package
+library(roxygen2)
 library(shiny)
-
+library(styler)
+#Source
+source("Credimmo/fonctions/calcule_mensualite.R")
+source("Credimmo/fonctions/CreerTableauAmortissement.R")
 # Define UI for application that draws a histogram
 ui <- fluidPage(
 
