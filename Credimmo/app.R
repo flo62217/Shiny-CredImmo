@@ -11,44 +11,34 @@ library(roxygen2)
 library(shiny)
 library(styler)
 #Source
-source("Credimmo/fonctions/calcule_mensualite.R")
-source("Credimmo/fonctions/CreerTableauAmortissement.R")
+source("fonctions/calcule_mensualite.R", local = TRUE)
+source("fonctions/CreerTableauAmortissement.R", local = TRUE)
 # Define UI for application that draws a histogram
 ui <- fluidPage(
 
     # Application title
-    titlePanel("Old Faithful Geyser Data"),
-
-    # Sidebar with a slider input for number of bins 
-    sidebarLayout(
-        sidebarPanel(
-            sliderInput("bins",
-                        "Number of bins:",
-                        min = 1,
-                        max = 50,
-                        value = 30)
-        ),
-
-        # Show a plot of the generated distribution
-        mainPanel(
-           plotOutput("distPlot")
-        )
-    )
+    titlePanel("CUB - Crédit Universitaire Bisontin"),
+    # Cellule pour que l'utilisateur puisse ajouter le montant de son emprunt (valeur du bien)
+    numericInput(inputId = "montant_proj", label = "Montant de l'emprunt", value = 0),
+    sliderInput("duree_cred", label = "Durée du crédit", min = 5, max = 25, value = 5), # J'ai ajouté les durées légales minimales et maximales d'un crédit immobilier (5-25)
+    sliderInput("taux_int", label = "Taux d'intérêt", min = 0, max = 10, value = 2.5, step = .5),
+    sliderInput("taux_ass", label = "Taux d'assurance", min = 0, max = 5, value = 0, step = .5),
+    numericInput(inputId = "montant_apport", label = "Montant de l'apport", value = 0),
+    numericInput(inputId = "rev_emp_1", label = "Revenu de l'emprunteur principal", value = 0),
+    tableOutput("tableau_amortissement")
 )
 
 # Define server logic required to draw a histogram
 server <- function(input, output) {
 
-    output$distPlot <- renderPlot({
-        # generate bins based on input$bins from ui.R
-        x    <- faithful[, 2]
-        bins <- seq(min(x), max(x), length.out = input$bins + 1)
-
-        # draw the histogram with the specified number of bins
-        hist(x, breaks = bins, col = 'darkgray', border = 'white',
-             xlab = 'Waiting time to next eruption (in mins)',
-             main = 'Histogram of waiting times')
-    })
+  output$tableau_amortissement <- renderTable(CreerTableauAmortissement(input$duree_cred,
+                                        input$taux_int,
+                                        input$taux_ass,
+                                        input$montant_proj,
+                                        input$montant_apport,
+                                        input$rev_emp_1,
+                                        rev_emp_2=0,
+                                        montant_frais=0))
 }
 
 # Run the application 
