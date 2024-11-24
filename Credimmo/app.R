@@ -11,7 +11,7 @@ library(roxygen2)
 library(shiny)
 library(styler)
 #Source
-source("fonctions/calcule_mensualite.R", local = TRUE)
+source("fonctions/calcule_mensualite.R", local = TRUE) # Le chemin choisi est par rapport au fichier app.R (est ce qu'on fait un dossier R pour les fonctions ? cf cheatsheet)
 source("fonctions/CreerTableauAmortissement.R", local = TRUE)
 # Define UI for application that draws a histogram
 ui <- fluidPage(
@@ -32,8 +32,8 @@ ui <- fluidPage(
 server <- function(input, output) {
 
   output$tableau_amortissement <- renderTable(CreerTableauAmortissement(input$duree_cred,
-                                        input$taux_int,
-                                        input$taux_ass,
+                                        input$taux_int/100,
+                                        input$taux_ass/100,
                                         input$montant_proj,
                                         input$montant_apport,
                                         input$rev_emp_1,
