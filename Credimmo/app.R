@@ -15,6 +15,8 @@ library(styler)
 #Source
 source("fonctions/calcule_mensualite.R", local = TRUE) # Le chemin choisi est par rapport au fichier app.R (est ce qu'on fait un dossier R pour les fonctions ? cf cheatsheet)
 source("fonctions/CreerTableauAmortissement.R", local = TRUE)
+source("fonctions/score_emprunteur.R", local = TRUE)
+
 # Define UI for application that draws a histogram
 ui <- fluidPage(
   includeCSS("www/style.css"),
@@ -39,8 +41,8 @@ ui <- fluidPage(
   nav_panel(title = "Simulateur de crédit immobilier",
     # Cellule pour que l'utilisateur puisse ajouter le montant de son emprunt (valeur du bien)
     fluidRow(column(width = 4,
-    numericInput(inputId = "montant_proj", label = "Montant de l'emprunt", value = 0),
-    numericInput(inputId = "montant_apport", label = "Montant de l'apport", value = 0)),
+    numericInput(inputId = "montant_proj", label = "Montant du bien", value = 0),
+    numericInput(inputId = "montant_apport", label = "Montant de l'apport", value = 0))),
     
     
     
@@ -50,7 +52,9 @@ ui <- fluidPage(
       sliderInput("taux_ass", label = "Taux d'assurance", min = 0, max = 5, value = 0, step = .5)),
     column(width = 4,
            "",
-           numericInput(inputId = "rev_emp_1", label = "Revenu de l'emprunteur principal", value = 0))),
+           numericInput(inputId = "rev_emp_1", label = "Revenu de l'emprunteur principal", value = 0),
+           numericInput(inputId = "rev_emp_2", label = "Revenu de l'emprunteur secondaire", value = 0),
+            verbatimTextOutput("score")),
     fluidRow(column(width = 12, offset = 3,tableOutput("tableau_amortissement")))
 )),
 id = "navigator",
@@ -67,8 +71,18 @@ server <- function(input, output) {
                                         input$montant_proj,
                                         input$montant_apport,
                                         input$rev_emp_1,
-                                        rev_emp_2=0,
+                                        rev_emp_2=input$rev_emp_2,
                                         montant_frais=0))
+  
+  output$score<-renderPrint(expr = score_emprunteur(input$duree_cred,
+                                                    input$taux_int/100,
+                                                    input$taux_ass/100,
+                                                    input$montant_proj,
+                                                    input$montant_apport,
+                                                    input$rev_emp_1,
+                                                    rev_emp_2=input$rev_emp_2,
+                                                    montant_frais=0))
+
 }
 
 # Run the application 
