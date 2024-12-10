@@ -7,6 +7,8 @@
 #    https://shiny.posit.co/
 #
 #Package
+library(bslib)
+library(htmltools)
 library(roxygen2)
 library(shiny)
 library(styler)
@@ -16,6 +18,7 @@ source("fonctions/CreerTableauAmortissement.R", local = TRUE)
 # Define UI for application that draws a histogram
 ui <- fluidPage(
   includeCSS("www/style.css"),
+ 
   fluidRow(
     column(
       width = 1,  #Prend 1/12 de la page
@@ -30,6 +33,10 @@ ui <- fluidPage(
       )
     )
   ),
+  navset_underline(
+  nav_panel(title = "Accueil",
+            p("Ceci est une page d'accueil à compléter")),
+  nav_panel(title = "Simulateur de crédit immobilier",
     # Cellule pour que l'utilisateur puisse ajouter le montant de son emprunt (valeur du bien)
     fluidRow(column(width = 4,
     numericInput(inputId = "montant_proj", label = "Montant de l'emprunt", value = 0),
@@ -45,7 +52,11 @@ ui <- fluidPage(
            "",
            numericInput(inputId = "rev_emp_1", label = "Revenu de l'emprunteur principal", value = 0))),
     fluidRow(column(width = 12, offset = 3,tableOutput("tableau_amortissement")))
-)
+)),
+id = "navigator",
+fluid = TRUE,
+bg = "#D3D6CF",
+widths = 3)
 
 # Define server logic required to draw a histogram
 server <- function(input, output) {
