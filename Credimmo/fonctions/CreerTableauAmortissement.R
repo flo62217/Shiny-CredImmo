@@ -41,7 +41,7 @@ CreerTableauAmortissement<- function(duree_cred,
   capital_restant_du <- rep(montant_emprunt,nb_mois)
   for(i in 1:nb_mois){
     interet[i] <- capital_restant_du[i]*taux_int/12
-    capital_restant_du[i+1] <- capital_restant_du[i]-(mensualite[i]-interet[i])
+    capital_restant_du[i+1] <- capital_restant_du[i]-(mensualite[i]-assurance[i]-interet[i])
   }
   capital_restant_du <- capital_restant_du[1:nb_mois]
   amortissement <- mensualite-interet-assurance
