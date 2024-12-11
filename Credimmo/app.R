@@ -39,7 +39,8 @@ ui <- fluidPage(
   ),
   navset_underline(
   nav_panel(title = "Accueil",
-            p("Ceci est une page d'accueil à compléter")),
+            p("Bienvenue au CUB, nous fournissons à nos clients des solutions de crédit immobilier pour l'achat de leurs biens immobilier."),
+            p("Vous trouverez sur notre site un simulateur de crédit immobilier et, prochainement, un indicateur qui vous permettera de savoir s'il est possible de demander un crédit ou s'il sera refusé automatiquement.")),
   nav_panel(title = "Simulateur de crédit immobilier",
     # Cellule pour que l'utilisateur puisse ajouter le montant de son emprunt (valeur du bien)
     fluidRow(column(width = 4,
@@ -64,7 +65,7 @@ ui <- fluidPage(
            verbatimTextOutput(outputId = "cout_total"))),
     fluidRow(column(width = 12, offset = 3,tableOutput("tableau_amortissement")))
     
-)),
+  )),
 id = "navigator",
 fluid = TRUE,
 bg = "#D3D6CF",
