@@ -31,7 +31,7 @@ CalculeMensualite <- function(duree_cred,
     mensualite_emprunt <- montant_emprunt/nb_mensualite
   }
   else{  mensualite_emprunt <- montant_emprunt*(taux_int/12)/(1-(1+taux_int/12)^(-nb_mensualite))}
-  mensualite <- mensualite_assurance + mensualite_emprunt +montant_frais/nb_mensualite
+  mensualite <- mensualite_assurance + mensualite_emprunt
   ##outputs
   mensualite
 }
