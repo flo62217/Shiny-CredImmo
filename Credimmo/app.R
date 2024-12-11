@@ -55,10 +55,11 @@ ui <- fluidPage(
            numericInput(inputId = "rev_emp_1", label = "Revenu de l'emprunteur principal", value = 0),
            numericInput(inputId = "rev_emp_2", label = "Revenu de l'emprunteur secondaire", value = 0),
            numericInput(inputId = "montant_frais", label = "Montant des Frais de dossier", value = 0),
+           downloadButton(outputId = "download_table", "Télécharger le tableau"),
             verbatimTextOutput("score"))),
     fluidRow(column(width = 12, offset = 3,tableOutput("tableau_amortissement")))
+    
 )),
-downloadButton(outputId = "download_table", "Télécharger le tableau"),
 id = "navigator",
 fluid = TRUE,
 bg = "#D3D6CF",
@@ -93,7 +94,7 @@ server <- function(input, output) {
                                           input$montant_apport,
                                           input$rev_emp_1,
                                           rev_emp_2=input$rev_emp_2,
-                                          input$montant_frais), file, row.names = FALSE,sep=",")
+                                          input$montant_frais), file, row.names = FALSE)
     }
   )
 
