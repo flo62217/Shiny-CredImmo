@@ -72,14 +72,19 @@ widths = 3)
 
 # Define server logic required to draw a histogram
 server <- function(input, output) {
-
+  rev_emp_2 <- reactive({if(input$is_emp_2){
+    input$rev_emp_2
+  }else{
+    0
+  }})
+ 
   output$tableau_amortissement <- renderTable(CreerTableauAmortissement(input$duree_cred,
                                         input$taux_int/100,
                                         input$taux_ass/100,
                                         input$montant_proj,
                                         input$montant_apport,
                                         input$rev_emp_1,
-                                        rev_emp_2=input$rev_emp_2,
+                                        rev_emp_2=rev_emp_2(),
                                         input$montant_frais))
   
   output$score<-renderPrint(expr = paste("Le taux d'endettement est de :",score_emprunteur(input$duree_cred,
@@ -88,7 +93,7 @@ server <- function(input, output) {
                                                     input$montant_proj,
                                                     input$montant_apport,
                                                     input$rev_emp_1,
-                                                    rev_emp_2=input$rev_emp_2,
+                                                    rev_emp_2=rev_emp_2(),
                                                     input$montant_frais),""))
   output$cout_total <- renderPrint(expr = paste("Le cout total du prêt est de :",CoutTotal(input$duree_cred,
                                                                                            input$taux_int/100,
@@ -96,7 +101,7 @@ server <- function(input, output) {
                                                                                            input$montant_proj,
                                                                                            input$montant_apport,
                                                                                            input$rev_emp_1,
-                                                                                           rev_emp_2=input$rev_emp_2,
+                                                                                           rev_emp_2=rev_emp_2(),
                                                                                            input$montant_frais),""))
   output$download_table <- downloadHandler(filename = "tableau_amortissement.csv",
     content = function(file) {
@@ -106,7 +111,7 @@ server <- function(input, output) {
                                           input$montant_proj,
                                           input$montant_apport,
                                           input$rev_emp_1,
-                                          rev_emp_2=input$rev_emp_2,
+                                          rev_emp_2=rev_emp_2(),
                                           input$montant_frais), file, row.names = FALSE)
     }
   )
