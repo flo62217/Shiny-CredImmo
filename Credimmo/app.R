@@ -54,6 +54,7 @@ ui <- fluidPage(
            "",
            numericInput(inputId = "rev_emp_1", label = "Revenu de l'emprunteur principal", value = 0),
            numericInput(inputId = "rev_emp_2", label = "Revenu de l'emprunteur secondaire", value = 0),
+           numericInput(inputId = "montant_frais", label = "Montant des Frais de dossier", value = 0),
             verbatimTextOutput("score"))),
     fluidRow(column(width = 12, offset = 3,tableOutput("tableau_amortissement")))
 )),
@@ -72,7 +73,7 @@ server <- function(input, output) {
                                         input$montant_apport,
                                         input$rev_emp_1,
                                         rev_emp_2=input$rev_emp_2,
-                                        montant_frais=0))
+                                        input$montant_frais))
   
   output$score<-renderPrint(expr = score_emprunteur(input$duree_cred,
                                                     input$taux_int/100,
@@ -81,7 +82,7 @@ server <- function(input, output) {
                                                     input$montant_apport,
                                                     input$rev_emp_1,
                                                     rev_emp_2=input$rev_emp_2,
-                                                    montant_frais=0))
+                                                    input$montant_frais))
 
 }
 
