@@ -58,6 +58,7 @@ ui <- fluidPage(
             verbatimTextOutput("score"))),
     fluidRow(column(width = 12, offset = 3,tableOutput("tableau_amortissement")))
 )),
+downloadButton(outputId = "download_table", "Télécharger le tableau"),
 id = "navigator",
 fluid = TRUE,
 bg = "#D3D6CF",
@@ -83,6 +84,18 @@ server <- function(input, output) {
                                                     input$rev_emp_1,
                                                     rev_emp_2=input$rev_emp_2,
                                                     input$montant_frais))
+  output$download_table <- downloadHandler(filename = "tableau_amortissement.csv",
+    content = function(file) {
+      write.csv(CreerTableauAmortissement(input$duree_cred,
+                                          input$taux_int/100,
+                                          input$taux_ass/100,
+                                          input$montant_proj,
+                                          input$montant_apport,
+                                          input$rev_emp_1,
+                                          rev_emp_2=input$rev_emp_2,
+                                          input$montant_frais), file, row.names = FALSE,sep=",")
+    }
+  )
 
 }
 
