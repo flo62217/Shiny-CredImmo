@@ -42,7 +42,7 @@ ui <- fluidPage(
     # Cellule pour que l'utilisateur puisse ajouter le montant de son emprunt (valeur du bien)
     fluidRow(column(width = 4,
     numericInput(inputId = "montant_proj", label = "Montant du bien", value = 0),
-    numericInput(inputId = "montant_apport", label = "Montant de l'apport", value = 0))),
+    numericInput(inputId = "montant_apport", label = "Montant de l'apport", value = 0)),
     
     
     
@@ -54,7 +54,7 @@ ui <- fluidPage(
            "",
            numericInput(inputId = "rev_emp_1", label = "Revenu de l'emprunteur principal", value = 0),
            numericInput(inputId = "rev_emp_2", label = "Revenu de l'emprunteur secondaire", value = 0),
-            verbatimTextOutput("score")),
+            verbatimTextOutput("score"))),
     fluidRow(column(width = 12, offset = 3,tableOutput("tableau_amortissement")))
 )),
 id = "navigator",
