@@ -12,10 +12,12 @@ library(htmltools)
 library(roxygen2)
 library(shiny)
 library(styler)
+library(dplyr)
 #Source
 source("fonctions/calcule_mensualite.R", local = TRUE) # Le chemin choisi est par rapport au fichier app.R (est ce qu'on fait un dossier R pour les fonctions ? cf cheatsheet)
 source("fonctions/CreerTableauAmortissement.R", local = TRUE)
 source("fonctions/score_emprunteur.R", local = TRUE)
+source("fonctions/CoutTotal.R", local=TRUE)
 
 # Define UI for application that draws a histogram
 ui <- fluidPage(
@@ -56,7 +58,8 @@ ui <- fluidPage(
            numericInput(inputId = "rev_emp_2", label = "Revenu de l'emprunteur secondaire", value = 0),
            numericInput(inputId = "montant_frais", label = "Montant des Frais de dossier", value = 0),
            downloadButton(outputId = "download_table", "Télécharger le tableau"),
-            verbatimTextOutput("score"))),
+           verbatimTextOutput(outputId = "score"),
+           verbatimTextOutput(outputId = "cout_total"))),
     fluidRow(column(width = 12, offset = 3,tableOutput("tableau_amortissement")))
     
 )),
@@ -77,14 +80,22 @@ server <- function(input, output) {
                                         rev_emp_2=input$rev_emp_2,
                                         input$montant_frais))
   
-  output$score<-renderPrint(expr = score_emprunteur(input$duree_cred,
+  output$score<-renderPrint(expr = paste("Le taux d'endettement est de :",score_emprunteur(input$duree_cred,
                                                     input$taux_int/100,
                                                     input$taux_ass/100,
                                                     input$montant_proj,
                                                     input$montant_apport,
                                                     input$rev_emp_1,
                                                     rev_emp_2=input$rev_emp_2,
-                                                    input$montant_frais))
+                                                    input$montant_frais),""))
+  output$cout_total <- renderPrint(expr = paste("Le cout total du prêt est de :",CoutTotal(input$duree_cred,
+                                                                                           input$taux_int/100,
+                                                                                           input$taux_ass/100,
+                                                                                           input$montant_proj,
+                                                                                           input$montant_apport,
+                                                                                           input$rev_emp_1,
+                                                                                           rev_emp_2=input$rev_emp_2,
+                                                                                           input$montant_frais),""))
   output$download_table <- downloadHandler(filename = "tableau_amortissement.csv",
     content = function(file) {
       write.csv(CreerTableauAmortissement(input$duree_cred,

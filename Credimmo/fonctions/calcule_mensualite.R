@@ -13,6 +13,7 @@
 #' @export
 #'
 #' @examples
+#' 
 CalculeMensualite <- function(duree_cred,
                           taux_int,
                           taux_ass,
