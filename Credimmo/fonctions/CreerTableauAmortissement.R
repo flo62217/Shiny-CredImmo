@@ -1,4 +1,4 @@
-#' Title
+#' Fonction qui créer le tableau d'amortissement
 #'
 #' @param duree_cred 
 #' @param taux_int 
@@ -13,6 +13,7 @@
 #' @export
 #'
 #' @examples
+#' 
 
 CreerTableauAmortissement<- function(duree_cred,
                                      taux_int,
@@ -42,7 +43,7 @@ CreerTableauAmortissement<- function(duree_cred,
   for(i in 1:nb_mois){
     interet[i] <- capital_restant_du[i]*taux_int/12
     capital_restant_du[i+1] <- capital_restant_du[i]-(mensualite[i]-assurance[i]-interet[i])
-  }
+  }#fin for
   capital_restant_du <- capital_restant_du[1:nb_mois]
   amortissement <- mensualite-interet-assurance
   #interet <- (restant_du-assurance-montant_frais/nb_mois)*taux_int/12
