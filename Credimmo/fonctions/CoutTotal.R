@@ -1,4 +1,6 @@
-#' 
+#' Calcul la somme que va couter le prêt pour le client (intéret + assurance)
+#' On n'autorise pas les valeurs impossible telle que une durée de crédit négative ou nulle
+#' ou encore que les autres variables soit négative strictement
 #'
 #' @param duree_cred 
 #' @param taux_int 
@@ -14,6 +16,12 @@
 #'
 #' @examples
 #' CoutTotal(20,0.05,0.02,100000,30000,2000)
+#' CoutTotal(0,0,0,0,0,0,0,0)
+#' CoutTotal(0,0,0,-1,0,0,0,0)
+#' CoutTotal(0,0,0,0,-1,0,0,0)
+#' CoutTotal(0,0,0,0,0,-1,0,0)
+#' CoutTotal(0,0,0,0,0,0,-1,0)
+#' CoutTotal(0,0,0,0,0,0,0,-1)
 CoutTotal <- function(duree_cred,
                       taux_int,
                       taux_ass,
@@ -22,22 +30,27 @@ CoutTotal <- function(duree_cred,
                       rev_emp_1,
                       rev_emp_2=0,
                       montant_frais=0){
-  tableau_amortissement <- CreerTableauAmortissement(duree_cred,
-                                                     taux_int,
-                                                     taux_ass,
-                                                     montant_proj,
-                                                     montant_apport,
-                                                     rev_emp_1,
-                                                     rev_emp_2=0,
-                                                     montant_frais)
-  cout_total_assurance <- tableau_amortissement %>% 
-    select(assurance) %>% 
-    sum()
-  cout_total_interet <- tableau_amortissement %>% 
-    select(interet) %>% 
-    sum()
-  cout_total <- cout_total_assurance + cout_total_interet
-  ##sortie
-cout_total
-    
-}
+  if(duree_cred<=0 || taux_int<0 || taux_ass<0 || montant_apport<0 || montant_proj<0 ||
+     rev_emp_1<0 || rev_emp_2<0 || montant_frais<0){
+    print("vérifiez les entrées")
+  }#end if
+  else{
+    tableau_amortissement <- CreerTableauAmortissement(duree_cred,
+                                                       taux_int,
+                                                       taux_ass,
+                                                       montant_proj,
+                                                       montant_apport,
+                                                       rev_emp_1,
+                                                       rev_emp_2=0,
+                                                       montant_frais)
+    cout_total_assurance <- tableau_amortissement %>% 
+      select(assurance) %>% 
+      sum()
+    cout_total_interet <- tableau_amortissement %>% 
+      select(interet) %>% 
+      sum()
+    cout_total <- cout_total_assurance + cout_total_interet
+    ##sortie
+    cout_total
+  }#end else
+}#end function
