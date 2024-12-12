@@ -1,5 +1,6 @@
-#' Score les individus sur la capacité de rembourser un emprunt 
-#'
+#' Calcul le taux d'endettement de l'emprunteur 
+#' On n'autorise pas les valeurs impossible telle que une durée de crédit négative ou nulle
+#' ou encore que les autres variables soit négative strictement
 #' @param duree_cred numeric, en années
 #' @param taux_int numeric, taux annuel 
 #' @param taux_ass numeric, taux annuel 
@@ -14,6 +15,13 @@
 #' @export
 #'
 #' @examples
+#' score_emprunteur(20,0.02,0.02,100000,10000,2000,0,1000)
+#' score_emprunteur(0,0,0,0,0,0,0,0)
+#' score_emprunteur(0,0,0,-1,0,0,0,0)
+#' score_emprunteur(0,0,0,0,-1,0,0,0)
+#' score_emprunteur(0,0,0,0,0,-1,0,0)
+#' score_emprunteur(0,0,0,0,0,0,-1,0)
+#' score_emprunteur(0,0,0,0,0,0,0,-1)
 
 
 score_emprunteur<-function(duree_cred,
@@ -24,15 +32,21 @@ score_emprunteur<-function(duree_cred,
                            rev_emp_1=1,
                            rev_emp_2=0,
                            montant_frais=0){
-
-mensualite<-CalculeMensualite(duree_cred,
-                              taux_int,
-                              taux_ass,
-                              montant_proj,
-                              montant_apport,
-                              rev_emp_1,
-                              rev_emp_2=0,
-                              montant_frais=0)
-taux_end<-mensualite/(rev_emp_1+rev_emp_2)
-taux_end
-}
+  if(duree_cred<=0 || taux_int<0 || taux_ass<0 || montant_apport<0 || montant_proj<0 ||
+     rev_emp_1<0 || rev_emp_2<0 || montant_frais<0){
+    print("vérifiez les entrées")
+  }#end if
+  else{
+    mensualite<-CalculeMensualite(duree_cred,
+                                  taux_int,
+                                  taux_ass,
+                                  montant_proj,
+                                  montant_apport,
+                                  rev_emp_1,
+                                  rev_emp_2=0,
+                                  montant_frais=0)
+    taux_end<-mensualite/(rev_emp_1+rev_emp_2)
+    ##sortie
+    taux_end
+  }# end else
+}#end function
