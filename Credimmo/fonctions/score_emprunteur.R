@@ -24,7 +24,7 @@
 #' score_emprunteur(0,0,0,0,0,0,0,-1)
 
 
-score_emprunteur<-function(duree_cred,
+score_emprunteur <- function(duree_cred,
                            taux_int,
                            taux_ass,
                            montant_proj,
