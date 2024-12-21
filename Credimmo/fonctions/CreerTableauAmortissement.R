@@ -41,14 +41,14 @@ CreerTableauAmortissement<- function(duree_cred,
     mois <- seq(1,nb_mois)
     ones <- rep(1,nb_mois)
     assurance <- rep(taux_ass*montant_emprunt,nb_mois)/nb_mois
-    mensualite <- rep(CalculeMensualite(duree_cred,
+    mensualite <- rep(round(CalculeMensualite(duree_cred,
                                         taux_int,
                                         taux_ass,
                                         montant_proj,
                                         montant_apport,
                                         rev_emp_1,
                                         rev_emp_2=0,
-                                        montant_frais),nb_mois)
+                                        montant_frais),2),nb_mois)
     restant_du_avec_interet <- (nb_mois-mois+ones)*mensualite
     interet <- rep(0,nb_mois)
     capital_restant_du <- rep(montant_emprunt,nb_mois)
@@ -60,7 +60,9 @@ CreerTableauAmortissement<- function(duree_cred,
     amortissement <- mensualite-interet-assurance
     #interet <- (restant_du-assurance-montant_frais/nb_mois)*taux_int/12
     
-    ##sortie
-    data.frame(mois,restant_du_avec_interet,capital_restant_du,amortissement,interet,assurance,mensualite)
+    
+    df<-data.frame(mois,round(restant_du_avec_interet),round(capital_restant_du),round(amortissement,2),round(interet,2),assurance,round(mensualite,2))
+    names(df)<-c("Mois de référence","Restant dû (Avec interêt)","Restant dû (Sans intêret)","Ammortissement du prêt","Intêret payés","Assurance payés","Mensualité du prêt")
+    df
   }
 }
