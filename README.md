@@ -1,11 +1,9 @@
 # Shiny-CredImmo
 Projet R Shiny simulation de crédit immobilier
 
-
-Sujet3 : Simulateur de crédit immobilier
-Anne De Moliner
-17/11/2018
-Objectif
+Bonjour, Bienvenu dans notre projet. Pour pouvoir accéder au simulateur de crédit, il suffit juste de lancer l'application Rshiny nommé app.R.
+Il est fortement recommandé d'utiliser l'application en plein écran, afin d'avoir la meilleur expérience.
+Voici les consignes qui ont été donné, en vous souhaitant une joyeuse simulation. 
 
 On construit un simulateur de crédit immobilier: les paramètres en entrée seront
 
