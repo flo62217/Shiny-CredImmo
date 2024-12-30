@@ -14,7 +14,6 @@ library(shiny)
 library(styler)
 library(dplyr)
 #Potentiellement meilleur rendus de tableau 
-library(DT)
 #Source
 source("fonctions/calcule_mensualite.R", local = TRUE) # Le chemin choisi est par rapport au fichier app.R
 source("fonctions/CreerTableauAmortissement.R", local = TRUE)
@@ -50,7 +49,7 @@ ui <- fluidPage(
     
   ),#end fluid row
   
-  navset_underline(
+  navset_tab(
   
     nav_panel(title = "Accueil",
               
@@ -103,7 +102,15 @@ ui <- fluidPage(
     ,column(width = 10,dataTableOutput("tableau_amortissement"))
     )#EndFluidRow
     
-  )# end navpanel
+  ),# end navpanel
+  nav_panel(title = "Graphique",
+            fluidRow(
+              column(width = 12,
+                     plotOutput('myplot')
+              )#End column
+              )#End FluidRow Panneau
+            )# End panneau graphique
+  
   
   ),#end navsetunderline
   
@@ -125,7 +132,7 @@ server <- function(input, output) {
     }#end ifelse
   )#end reactive
  
-  output$tableau_amortissement <- renderDT({CreerTableauAmortissement(input$duree_cred,
+  output$tableau_amortissement <- renderDataTable({CreerTableauAmortissement(input$duree_cred,
                                         input$taux_int/100,
                                         input$taux_ass/100,
                                         input$montant_proj,
@@ -164,6 +171,8 @@ server <- function(input, output) {
                                           input$montant_frais), file, row.names = FALSE)
     }
   )#end download_table
+  
+  output$myplot <-renderPlot(plot(output$tableau_amortissement$capital_restant_du))
 
 }#end server
 
