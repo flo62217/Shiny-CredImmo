@@ -62,7 +62,7 @@ CreerTableauAmortissement<- function(duree_cred,
     
     
     df<-data.frame(mois,round(restant_du_avec_interet),round(capital_restant_du),round(amortissement,2),round(interet,2),assurance,round(mensualite,2))
-    names(df)<-c("Mois de référence","Restant dû (Avec interêt)","Restant dû (Sans intêret)","Ammortissement du prêt","Intêret payés","Assurance payés","Mensualité du prêt")
+    names(df)<-c("Mois de référence","Restant dû (Avec intérêt)","Restant dû (Sans intérêt)","Ammortissement du prêt","Intérêt payés","Assurance payée","Mensualité du prêt")
     df
   }
 }

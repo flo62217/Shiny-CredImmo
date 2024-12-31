@@ -44,12 +44,12 @@ CoutTotal <- function(duree_cred,
                                                        rev_emp_2=0,
                                                        montant_frais)
     cout_total_assurance <- tableau_amortissement %>% 
-      select(assurance) %>% 
+      select(`Assurance payée`) %>% 
       sum()
     cout_total_interet <- tableau_amortissement %>% 
-      select(interet) %>% 
+      select(`Intérêt payés`) %>% 
       sum()
-    cout_total <- cout_total_assurance + cout_total_interet
+    cout_total <- cout_total_assurance + cout_total_interet+montant_frais
     ##sortie
     cout_total
   }#end else
