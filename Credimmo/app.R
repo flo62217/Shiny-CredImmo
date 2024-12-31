@@ -8,11 +8,13 @@
 #
 #Package
 library(bslib)
+library(dplyr)
+library(ggplot2)
 library(htmltools)
 library(roxygen2)
 library(shiny)
 library(styler)
-library(dplyr)
+
 #Potentiellement meilleur rendus de tableau 
 #Source
 source("fonctions/calcule_mensualite.R", local = TRUE) # Le chemin choisi est par rapport au fichier app.R
@@ -105,9 +107,8 @@ ui <- fluidPage(
   ),# end navpanel
   nav_panel(title = "Graphique",
             fluidRow(
-              column(width = 12,
-                     plotOutput('myplot')
-              )#End column
+              column(width = 6,plotOutput('plot_interet')),#End column
+              column(width = 6,plotOutput('plot_restant'))
               )#End FluidRow Panneau
             )# End panneau graphique
   
@@ -172,7 +173,44 @@ server <- function(input, output) {
     }
   )#end download_table
   
-  output$myplot <-renderPlot(plot(output$tableau_amortissement$capital_restant_du))
+  output$plot_restant <-renderPlot({
+    dt<-CreerTableauAmortissement(input$duree_cred,
+                                  input$taux_int/100,
+                                  input$taux_ass/100,
+                                  input$montant_proj,
+                                  input$montant_apport,
+                                  input$rev_emp_1,
+                                  rev_emp_2=rev_emp_2(),
+                                  input$montant_frais)
+    temps<-dt$"Mois de référence"
+    rest_avec<-dt$"Restant dû (Avec intérêt)"
+    rest_sans<-dt$"Restant dû (Sans intérêt)"
+    print(length(temps))
+    print(length(rest_avec))
+    print(length(rest_sans))
+    plot(temps,rest_avec,col="darkblue",xlab="Nombre de Mois",ylab="Montant")
+    points(temps,rest_sans, col="darkred")
+    legend("topright",legend=c("Restant dû (Avec interêt)","Restant dû (Sans intérêt)","Intérêt payés"),col=c("darkblue","darkred"),lty=c(1,1))
+    title(main = "Evolution et comparaison des Restant dû avec et sans intérêt")
+    })
+
+  output$plot_interet <-renderPlot({
+    dt<-CreerTableauAmortissement(input$duree_cred,
+                                  input$taux_int/100,
+                                  input$taux_ass/100,
+                                  input$montant_proj,
+                                  input$montant_apport,
+                                  input$rev_emp_1,
+                                  rev_emp_2=rev_emp_2(),
+                                  input$montant_frais)
+    tot<-sum(dt$"Intérêt payés")
+    if(tot!=0){
+      cumsum_int<-cumsum(dt$"Intérêt payés")
+      plot(dt$"Mois de référence",cumsum_int/tot,col="gold",xlab="Nombre de Mois",ylab="Pourcentage")
+      legend("bottomright",legend=c("Intérêt payés"),col=c("gold"),lty=c(1))
+      title(main="Proportion des intérêt payés au fil du temps")
+    }#End if
+      })
 
 }#end server
 
