@@ -31,7 +31,14 @@ score_emprunteur <- function(duree_cred,
                            montant_apport,
                            rev_emp_1=1,
                            rev_emp_2=0,
-                           montant_frais=0){
+                           montant_frais=0,
+                           age,
+                           cigarette,
+                           sport,
+                           maladie,
+                           travail,
+                           handicap,
+                           marital){
   if(duree_cred<=0 || taux_int<0 || taux_ass<0 || montant_apport<0 || montant_proj<0 ||
      rev_emp_1<0 || rev_emp_2<0 || montant_frais<0){
     print("vérifiez les entrées")
@@ -47,6 +54,8 @@ score_emprunteur <- function(duree_cred,
                                   montant_frais=0)
     taux_end<-mensualite/(rev_emp_1+rev_emp_2)
     ##sortie
+    score_revenu <- min(1/taux_end*as.integer(1/taux_end>3)*10/3,60)
+    score_age <- -(age-18)*(age-50/18)*as.integer(18 <= age & age <= 25)*9/70+20*as.integer(25 <= age & age <= 55)+max((-x+75),0)*as.integer(age >= 55)
     taux_end
   }# end else
 }#end function
