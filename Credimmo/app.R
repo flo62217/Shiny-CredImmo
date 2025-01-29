@@ -35,7 +35,7 @@ ui <- fluidPage(
       width = 1,  #Prend 1/12 de la page
       img(src = "images/Logo CUB.png", width = "100px", height = "100px")
       
-    ),#end column
+    ),#end column logo
     
     column(
       
@@ -47,9 +47,9 @@ ui <- fluidPage(
         style = "display: inline-block; vertical-align: top; margin-left: 10px;"
       )#end div
       
-    )#end column
+    )#end column div
     
-  ),#end fluid row
+  ),#end fluid row en tête
   
   navset_tab(
   
@@ -60,9 +60,35 @@ ui <- fluidPage(
             
             p("Vous trouverez sur notre site un simulateur de crédit immobilier et, prochainement, un indicateur
               qui vous permettera de savoir s'il est possible de demander un crédit ou s'il sera refusé
-              automatiquement.")
-            
-            ),#end navpanel
+              automatiquement."),
+            p("Veuillez saisir les informations concernant l'emprunteur principal"),
+            fluidRow(
+              
+              column( width = 10,
+                      
+              sliderInput("age", label = "Age", min = 18, max = 65, value = 35),
+              
+              radioButtons("cig","Êtes vous fumeur ?",choices=c("Quotidiennement","Occasionnellement","Non")),
+              
+              radioButtons("sport","Faites vous du sport?",choices=c("Quotidiennement","Occasionnellement","Non")),
+              
+              radioButtons("mal","Avez vous des maladies chroniques ?",choices=c("Oui","Non")),
+              
+              radioButtons("trav","Quel est votre facteur de pénibilité au travail",choices=c("Fort (Serveur,travail en chantier)","Moyen (Travail debout,)","Faible (Bureau, travail assis)")),
+              
+              radioButtons("hand","Avez vous un handicape ?",choices=c("Oui","Non")),
+              
+              radioButtons("mari","Situation maritale",choices=c("Marié/Pacse","Célibataire"))
+              
+              ),#end column,
+              
+              column(width=2,
+                     
+                     verbatimTextOutput(outputId = "score")
+                     
+                     )
+              )#end Row questionaire
+            ),#end navpanel Accueil
     
   nav_panel(title = "Simulateur de crédit immobilier",
     # Cellule pour que l'utilisateur puisse ajouter le montant de son emprunt
@@ -70,7 +96,7 @@ ui <- fluidPage(
     fluidRow(
       column(width = 2,wellPanel(
              
-            numericInput(inputId = "montant_proj", label = "Montant du bien", value = 0),
+            numericInput(inputId = "montant_proj", label = "Montant du bien", value = 150000),
     
             numericInput(inputId = "montant_apport", label = "Montant de l'apport", value = 0),
     
@@ -95,22 +121,22 @@ ui <- fluidPage(
     
     downloadButton(outputId = "download_table", "Télécharger le tableau"),
     
-    #verbatimTextOutput(outputId = "score"),
     
     verbatimTextOutput(outputId = "cout_total")
     
     )#endWellPanel
-    )#end column
-    ,column(width = 10,dataTableOutput("tableau_amortissement"))
+    )#end column Input
+    ,column(width = 10,dataTableOutput("tableau_amortissement")
+            )#End column Tableau amortissement
     )#EndFluidRow
     
-  ),# end navpanel
+  ),# end navpanel Simulateur 
   nav_panel(title = "Graphique",
             fluidRow(
               column(width = 6,plotOutput('plot_interet')),#End column
               column(width = 6,plotOutput('plot_restant'))
               )#End FluidRow Panneau
-            )# End panneau graphique
+            )# End navpanel graphique
   
   
   ),#end navsetunderline
@@ -118,7 +144,9 @@ ui <- fluidPage(
 id = "navigator",
 fluid = TRUE,
 bg = "#D3D6CF",
-widths = 20)#end ui
+widths = 20
+
+)#end ui
 
 # Define server logic required to draw a histogram
 server <- function(input, output) {
@@ -160,6 +188,8 @@ server <- function(input, output) {
                                                                                            rev_emp_2=rev_emp_2(),
                                                                                            input$montant_frais)
                                    )#end renderprint
+  
+
   output$download_table <- downloadHandler(filename = "tableau_amortissement.csv",
     content = function(file) {
       write.csv(CreerTableauAmortissement(input$duree_cred,
@@ -182,17 +212,14 @@ server <- function(input, output) {
                                   input$rev_emp_1,
                                   rev_emp_2=rev_emp_2(),
                                   input$montant_frais)
-    temps<-dt$"Mois de référence"
-    rest_avec<-dt$"Restant dû (Avec intérêt)"
-    rest_sans<-dt$"Restant dû (Sans intérêt)"
-    print(length(temps))
-    print(length(rest_avec))
-    print(length(rest_sans))
-    plot(temps,rest_avec,col="darkblue",xlab="Nombre de Mois",ylab="Montant")
-    points(temps,rest_sans, col="darkred")
-    legend("topright",legend=c("Restant dû (Avec interêt)","Restant dû (Sans intérêt)","Intérêt payés"),col=c("darkblue","darkred"),lty=c(1,1))
-    title(main = "Evolution et comparaison des Restant dû avec et sans intérêt")
-    })
+    temps<-dt %>% select(`Mois de référence`)
+    rest_avec<-dt %>% select(`Restant dû (Avec intérêt)`)
+    rest_sans<-dt %>% select(`Restant dû (Sans intérêt)`)
+    ggplot(data=df,aes(x=`Mois de référence`,y=`Restant dû (Sans intérêt)`))+
+      geom_line(col="black") +
+      geom_point(col="black")+
+      labs(x = "Temps", y = "Montant", title = "Evolution du remboursement au fil du temps")
+    })#end output plot_restant
 
   output$plot_interet <-renderPlot({
     dt<-CreerTableauAmortissement(input$duree_cred,
@@ -203,16 +230,20 @@ server <- function(input, output) {
                                   input$rev_emp_1,
                                   rev_emp_2=rev_emp_2(),
                                   input$montant_frais)
-    tot<-sum(dt$"Intérêt payés")
+    tot<-dt %>%select(`Intérêt payés`) %>% sum()
+    temps <-dt %>% select(`Mois de référence`)
     if(tot!=0){
-      cumsum_int<-cumsum(dt$"Intérêt payés")
-      plot(dt$"Mois de référence",cumsum_int/tot,col="gold",xlab="Nombre de Mois",ylab="Pourcentage")
-      legend("bottomright",legend=c("Intérêt payés"),col=c("gold"),lty=c(1))
-      title(main="Proportion des intérêt payés au fil du temps")
+      cumsum_int<-dt %>%select(`Intérêt payés`) %>% apply(FUN = function(x) cumsum(x)/tot,MARGIN=2) %>% data.frame()
+      print(cumsum_int)
+      ggplot(data = cumsum_int, aes(x = seq_along(`Intérêt.payés`), y = `Intérêt.payés`)) +
+        geom_line(col="black") +
+        geom_point(col="black")+
+        labs(x = "Temps", y = "Montant", title = "Evolution du pourcentage d'intérêt payés en fonction du temps")
     }#End if
-      })
+      })# end output plot_interet
 
 }#end server
 
 # Run the application 
 shinyApp(ui = ui, server = server)
+
