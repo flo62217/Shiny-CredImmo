@@ -55,13 +55,13 @@ score_emprunteur <- function(duree_cred,
     taux_end<-mensualite/(rev_emp_1+rev_emp_2)
     ##sortie
     score_revenu <- min(1/taux_end*as.integer(1/taux_end>3)*10/3,60)
-    score_age <- -(age-18)*(age-50/18)*as.integer(18 <= age & age <= 25)*9/70+20*as.integer(25 <= age & age <= 55)+max((-x+75),0)*as.integer(age >= 55)
+    score_age <- -(age-18)*(age-50/18)*as.integer(18 <= age & age <= 25)*9/70+20*as.integer(25 <= age & age <= 55)+max((-age+75),0)*as.integer(age >= 55)
     score_sport <- -2*as.integer(sport == "Non")+2*as.integer(sport == "Quotidiennement")
     score_maladie <- -5*as.integer(maladie == "Oui")
     score_cigarette <- 5*as.integer(cigarette == "Non")-5*as.integer(cigarette == "Quotidiennement")
     score_handicap <- -5*as.integer(handicap == "Oui")
-    score_marital <- 5*as.integer(marital == "Marié/Pacse")
-    score_penible <- 6*as.integer(penible == "Faible (Bureau, travail assis)")-5*as.integer(penible == "Fort (Serveur,travail en chantier)")+3*as.integer(penible == "Moyen (Travail debout,)")
+    score_marital <- 6*as.integer(marital == "Marié/Pacse")
+    score_penible <- 7*as.integer(travail == "Faible (Bureau, travail assis)")-5*as.integer(travail == "Fort (Serveur,travail en chantier)")+3*as.integer(travail == "Moyen (Travail debout,)")
     score <- score_revenu+score_age+score_sport+score_maladie+score_cigarette+score_handicap+score_marital+score_penible
     score
     #taux_end

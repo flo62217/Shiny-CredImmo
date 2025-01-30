@@ -76,7 +76,7 @@ ui <- fluidPage(
               
               radioButtons("trav","Quel est votre facteur de pénibilité au travail",choices=c("Fort (Serveur,travail en chantier)","Moyen (Travail debout,)","Faible (Bureau, travail assis)")),
               
-              radioButtons("hand","Avez vous un handicape ?",choices=c("Oui","Non")),
+              radioButtons("hand","Avez vous un handicap ?",choices=c("Oui","Non")),
               
               radioButtons("mari","Situation maritale",choices=c("Marié/Pacse","Célibataire"))
               
@@ -122,7 +122,9 @@ ui <- fluidPage(
     downloadButton(outputId = "download_table", "Télécharger le tableau"),
     
     
-    verbatimTextOutput(outputId = "cout_total")
+    verbatimTextOutput(outputId = "cout_total"),
+    
+    verbatimTextOutput(outputId = "score")
     
     )#endWellPanel
     )#end column Input
@@ -171,14 +173,21 @@ server <- function(input, output) {
                                         input$montant_frais)
                                         })#end rendertable
   
-  # #output$score<-renderPrint(expr =score_emprunteur(input$duree_cred,
-  #                                                   input$taux_int/100,
-  #                                                   input$taux_ass/100,
-  #                                                   input$montant_proj,
-  #                                                   input$montant_apport,
-  #                                                   input$rev_emp_1,
-  #                                                   rev_emp_2=rev_emp_2(),
-  #                                                   input$montant_frais),width = 10)#end render print
+output$score<-renderPrint(expr =score_emprunteur(input$duree_cred,
+                                                 input$taux_int/100,
+                                                 input$taux_ass/100,
+                                                 input$montant_proj,
+                                                 input$montant_apport,
+                                                 input$rev_emp_1,
+                                                 rev_emp_2=rev_emp_2(),
+                                                 input$montant_frais,
+                                                 input$age,
+                                                 input$cig,
+                                                 input$sport,
+                                                 input$mal,
+                                                 input$trav,
+                                                 input$hand,
+                                                 input$mari),width = 10)#end render print
   output$cout_total <- renderPrint(expr = CoutTotal(input$duree_cred,
                                                                                            input$taux_int/100,
                                                                                            input$taux_ass/100,
