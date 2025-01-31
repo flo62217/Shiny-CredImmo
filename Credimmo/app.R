@@ -106,7 +106,7 @@ ui <- fluidPage(
     
             sliderInput("taux_ass", label = "Taux d'assurance", min = 0, max = 5, value = 0, step = .5),
       
-            numericInput(inputId = "rev_emp_1", label = "Revenu de l'emprunteur principal", value = 0),
+            numericInput(inputId = "rev_emp_1", label = "Revenu de l'emprunteur principal", value = 0, min = 0),
     
             checkboxInput(inputId = "is_emp_2", label = "Présence d'emprunteur secondaire", value = FALSE),
     
@@ -162,13 +162,23 @@ server <- function(input, output) {
   }#end else
     }#end ifelse
   )#end reactive
+  
+  rev_emp_1 <- reactive(
+    {if(is.na(input$rev_emp_1) || input$rev_emp_1 == ""){
+      0
+      }
+      else{
+        input$rev_emp_1
+      }}#end bloc dans reactive
+  )#end reactive
+
  
   output$tableau_amortissement <- renderDataTable({CreerTableauAmortissement(input$duree_cred,
                                         input$taux_int/100,
                                         input$taux_ass/100,
                                         input$montant_proj,
                                         input$montant_apport,
-                                        input$rev_emp_1,
+                                        rev_emp_1(),
                                         rev_emp_2=rev_emp_2(),
                                         input$montant_frais)
                                         })#end rendertable
@@ -178,7 +188,7 @@ output$score<-renderPrint(expr =score_emprunteur(input$duree_cred,
                                                  input$taux_ass/100,
                                                  input$montant_proj,
                                                  input$montant_apport,
-                                                 input$rev_emp_1,
+                                                 rev_emp_1(),
                                                  rev_emp_2=rev_emp_2(),
                                                  input$montant_frais,
                                                  input$age,
@@ -193,7 +203,7 @@ output$score<-renderPrint(expr =score_emprunteur(input$duree_cred,
                                                                                            input$taux_ass/100,
                                                                                            input$montant_proj,
                                                                                            input$montant_apport,
-                                                                                           input$rev_emp_1,
+                                                                                           rev_emp_1(),
                                                                                            rev_emp_2=rev_emp_2(),
                                                                                            input$montant_frais)
                                    )#end renderprint
@@ -206,7 +216,7 @@ output$score<-renderPrint(expr =score_emprunteur(input$duree_cred,
                                           input$taux_ass/100,
                                           input$montant_proj,
                                           input$montant_apport,
-                                          input$rev_emp_1,
+                                          rev_emp_1(),
                                           rev_emp_2=rev_emp_2(),
                                           input$montant_frais), file, row.names = FALSE)
     }
@@ -218,7 +228,7 @@ output$score<-renderPrint(expr =score_emprunteur(input$duree_cred,
                                   input$taux_ass/100,
                                   input$montant_proj,
                                   input$montant_apport,
-                                  input$rev_emp_1,
+                                  rev_emp_1(),
                                   rev_emp_2=rev_emp_2(),
                                   input$montant_frais)
     temps<-dt %>% select(`Mois de référence`)
