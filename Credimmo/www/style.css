@@ -1,3 +1,20 @@
 body {
   background-color: #D3D6CF; /* Couleur du fond de la page */
 }
+.slider-custom .irs-bar {
+  background: lightgrey;
+  border-color: black;
+}
+.slider-custom .irs-slider {
+  background: lightgrey;
+  border-color: black;
+}
+.slider-custom .irs-handle {
+  background-color: lightgrey;
+  border-color: black;
+}
+.slider-custom .irs-single{
+  background-color: lightgrey;
+  border-color: black;
+  color: black;
+}

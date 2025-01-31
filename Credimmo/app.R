@@ -10,6 +10,7 @@
 library(bslib)
 library(dplyr)
 library(ggplot2)
+library(glue)
 library(htmltools)
 library(roxygen2)
 library(shiny)
@@ -66,7 +67,8 @@ ui <- fluidPage(
               
               column( width = 10,
                       
-              sliderInput("age", label = "Age", min = 18, max = 65, value = 35),
+              div(class = "slider-custom",
+                  sliderInput("age", label = "Age", min = 18, max = 65, value = 35)),
               
               radioButtons("cig","Êtes vous fumeur ?",choices=c("Quotidiennement","Occasionnellement","Non")),
               
@@ -84,7 +86,7 @@ ui <- fluidPage(
               
               column(width=2,
                      
-                     verbatimTextOutput(outputId = "score")
+                     textOutput(outputId = "score")
                      
                      )
               )#end Row questionaire
@@ -122,9 +124,9 @@ ui <- fluidPage(
     downloadButton(outputId = "download_table", "Télécharger le tableau"),
     
     
-    verbatimTextOutput(outputId = "cout_total"),
+    textOutput(outputId = "cout_total"),
     
-    verbatimTextOutput(outputId = "score")
+    textOutput(outputId = "score")
     
     )#endWellPanel
     )#end column Input
@@ -201,7 +203,7 @@ server <- function(input, output) {
                                         montant_frais())
                                         })#end rendertable
   
-output$score<-renderPrint(expr =score_emprunteur(input$duree_cred,
+output$score<-renderText(glue("Score emprunteur : ",score_emprunteur(input$duree_cred,
                                                  input$taux_int/100,
                                                  input$taux_ass/100,
                                                  input$montant_proj,
@@ -215,15 +217,15 @@ output$score<-renderPrint(expr =score_emprunteur(input$duree_cred,
                                                  input$mal,
                                                  input$trav,
                                                  input$hand,
-                                                 input$mari),width = 10)#end render print
-  output$cout_total <- renderPrint(expr = CoutTotal(input$duree_cred,
+                                                 input$mari)))#end render print
+  output$cout_total <- renderText(glue("Cout total : ",CoutTotal(input$duree_cred,
                                                                                            input$taux_int/100,
                                                                                            input$taux_ass/100,
                                                                                            input$montant_proj,
                                                                                            montant_apport(),
                                                                                            rev_emp_1(),
                                                                                            rev_emp_2=rev_emp_2(),
-                                                                                           montant_frais())
+                                                                                           montant_frais()))
                                    )#end renderprint
   
 
@@ -252,7 +254,7 @@ output$score<-renderPrint(expr =score_emprunteur(input$duree_cred,
     temps<-dt %>% select(`Mois de référence`)
     rest_avec<-dt %>% select(`Restant dû (Avec intérêt)`)
     rest_sans<-dt %>% select(`Restant dû (Sans intérêt)`)
-    ggplot(data=df,aes(x=`Mois de référence`,y=`Restant dû (Sans intérêt)`))+
+    ggplot(data=dt,aes(x=`Mois de référence`,y=`Restant dû (Sans intérêt)`))+
       geom_line(col="black") +
       geom_point(col="black")+
       labs(x = "Temps", y = "Montant", title = "Evolution du remboursement au fil du temps")
