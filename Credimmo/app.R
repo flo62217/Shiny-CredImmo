@@ -171,26 +171,44 @@ server <- function(input, output) {
         input$rev_emp_1
       }}#end bloc dans reactive
   )#end reactive
+  
+  montant_apport <- reactive(
+    {if(is.na(input$montant_apport) || input$montant_apport == ""){
+      0
+    }
+      else{
+        input$montant_apport
+      }}#end bloc dans reactive
+  )#end reactive
+  
+  montant_frais <- reactive(
+    {if(is.na(input$montant_frais) || input$montant_frais == ""){
+      0
+    }
+      else{
+        input$montant_frais
+      }}#end bloc dans reactive
+  )#end reactive
 
  
   output$tableau_amortissement <- renderDataTable({CreerTableauAmortissement(input$duree_cred,
                                         input$taux_int/100,
                                         input$taux_ass/100,
                                         input$montant_proj,
-                                        input$montant_apport,
+                                        montant_apport(),
                                         rev_emp_1(),
                                         rev_emp_2=rev_emp_2(),
-                                        input$montant_frais)
+                                        montant_frais())
                                         })#end rendertable
   
 output$score<-renderPrint(expr =score_emprunteur(input$duree_cred,
                                                  input$taux_int/100,
                                                  input$taux_ass/100,
                                                  input$montant_proj,
-                                                 input$montant_apport,
+                                                 montant_apport(),
                                                  rev_emp_1(),
                                                  rev_emp_2=rev_emp_2(),
-                                                 input$montant_frais,
+                                                 montant_frais(),
                                                  input$age,
                                                  input$cig,
                                                  input$sport,
@@ -202,10 +220,10 @@ output$score<-renderPrint(expr =score_emprunteur(input$duree_cred,
                                                                                            input$taux_int/100,
                                                                                            input$taux_ass/100,
                                                                                            input$montant_proj,
-                                                                                           input$montant_apport,
+                                                                                           montant_apport(),
                                                                                            rev_emp_1(),
                                                                                            rev_emp_2=rev_emp_2(),
-                                                                                           input$montant_frais)
+                                                                                           montant_frais())
                                    )#end renderprint
   
 
@@ -215,10 +233,10 @@ output$score<-renderPrint(expr =score_emprunteur(input$duree_cred,
                                           input$taux_int/100,
                                           input$taux_ass/100,
                                           input$montant_proj,
-                                          input$montant_apport,
+                                          montant_apport(),
                                           rev_emp_1(),
                                           rev_emp_2=rev_emp_2(),
-                                          input$montant_frais), file, row.names = FALSE)
+                                          montant_frais()), file, row.names = FALSE)
     }
   )#end download_table
   
@@ -227,10 +245,10 @@ output$score<-renderPrint(expr =score_emprunteur(input$duree_cred,
                                   input$taux_int/100,
                                   input$taux_ass/100,
                                   input$montant_proj,
-                                  input$montant_apport,
+                                  montant_apport(),
                                   rev_emp_1(),
                                   rev_emp_2=rev_emp_2(),
-                                  input$montant_frais)
+                                  montant_frais())
     temps<-dt %>% select(`Mois de référence`)
     rest_avec<-dt %>% select(`Restant dû (Avec intérêt)`)
     rest_sans<-dt %>% select(`Restant dû (Sans intérêt)`)
@@ -245,8 +263,8 @@ output$score<-renderPrint(expr =score_emprunteur(input$duree_cred,
                                   input$taux_int/100,
                                   input$taux_ass/100,
                                   input$montant_proj,
-                                  input$montant_apport,
-                                  input$rev_emp_1,
+                                  montant_apport(),
+                                  rev_emp_1(),
                                   rev_emp_2=rev_emp_2(),
                                   input$montant_frais)
     tot<-dt %>%select(`Intérêt payés`) %>% sum()
