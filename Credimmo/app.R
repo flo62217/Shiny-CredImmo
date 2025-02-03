@@ -15,6 +15,7 @@ library(htmltools)
 library(roxygen2)
 library(shiny)
 library(styler)
+library(shinydashboard)
 
 #Potentiellement meilleur rendus de tableau 
 #Source
@@ -87,18 +88,17 @@ ui <- fluidPage(
                       radioButtons("hand","Avez vous un handicap ?",choices=c("Oui","Non")),
                       
                       radioButtons("mari","Situation maritale",choices=c("Marié/Pacse","Célibataire"))
-                      
               ),#end column
-              column(width=2,textOutput(outputId = "score")
-              )
             )#end Row questionaire
             ),
     
   nav_panel(title = "Simulateur de crédit immobilier",
-    # Cellule pour que l'utilisateur puisse ajouter le montant de son emprunt
-    
     fluidRow(
       column(width = 2,wellPanel(
+        fluidRow(
+        column(12, valueBoxOutput(outputId = "cout_total")),
+        column(12, valueBoxOutput(outputId = "score"))
+        ),#end fluidrow
              
             numericInput(inputId = "montant_proj", label = "Montant du bien", value = 150000),
     
@@ -124,12 +124,6 @@ ui <- fluidPage(
     numericInput(inputId = "montant_frais", label = "Montant des Frais de dossier", value = 0),
     
     downloadButton(outputId = "download_table", "Télécharger le tableau"),
-    
-    
-    textOutput(outputId = "cout_total"),
-    
-    textOutput(outputId = "score")
-    
     )#endWellPanel
     )#end column Input
     ,column(width = 10,dataTableOutput("tableau_amortissement")
@@ -205,7 +199,7 @@ server <- function(input, output) {
                                         montant_frais())
                                         })#end rendertable
   
-output$score<-renderText(glue("Score emprunteur (/100) : ",round(score_emprunteur(input$duree_cred,
+output$score<-renderValueBox({valueBox(value = round(score_emprunteur(input$duree_cred,
                                                  input$taux_int/100,
                                                  input$taux_ass/100,
                                                  input$montant_proj,
@@ -219,17 +213,18 @@ output$score<-renderText(glue("Score emprunteur (/100) : ",round(score_emprunteu
                                                  input$mal,
                                                  input$trav,
                                                  input$hand,
-                                                 input$mari),2)))#end render print
+                                                 input$mari),2),subtitle = "Score emprunteur (/100)",color = "blue")}
+                             )#end rendervalueBox
   
-  output$cout_total <- renderText(glue("Cout total : ",CoutTotal(input$duree_cred,
-                                                                                           input$taux_int/100,
-                                                                                           input$taux_ass/100,
-                                                                                           input$montant_proj,
-                                                                                           montant_apport(),
-                                                                                           rev_emp_1(),
-                                                                                           rev_emp_2=rev_emp_2(),
-                                                                                           montant_frais()))
-                                   )#end renderprint
+  output$cout_total <- renderValueBox({valueBox(value = round(CoutTotal(input$duree_cred,
+                                                        input$taux_int/100,
+                                                        input$taux_ass/100,
+                                                        input$montant_proj,
+                                                        montant_apport(),
+                                                        rev_emp_1(),
+                                                        rev_emp_2=rev_emp_2(),
+                                                        montant_frais()),0),subtitle = "Coût total du crédit",color = "red")}
+                                   )#end renderValueBox
   
 
   output$download_table <- downloadHandler(filename = "tableau_amortissement.csv",
