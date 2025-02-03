@@ -11,7 +11,6 @@
 #' @param montant_frais numeric, montant des frais de dossier et frais bancaires
 #'
 #' @return le score de la personne ou du foyer qui emprunte
-#' Pour le moment la fonction retourne seulement le taux d'endettement
 #' @export
 #'
 #' @examples

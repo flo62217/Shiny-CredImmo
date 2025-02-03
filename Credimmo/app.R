@@ -55,42 +55,44 @@ ui <- fluidPage(
   navset_tab(
   
     nav_panel(title = "Accueil",
-              
-            p("Bienvenue au CUB, nous fournissons à nos clients des solutions de crédit immobilier pour l'achat
-              de leurs biens immobiliers."),
-            
-            p("Vous trouverez sur notre site un simulateur de crédit immobilier et, prochainement, un indicateur
+            fluidRow(
+              column(12, align = "center",
+                     h2("Collaborateurs : "),
+                     h3("Antoine Genin, Florian Bucquet, Lucas Debauche"),
+                     h4("Projet pour l'unité de R avancé supervisée par A. de Moliner, réalisé 
+                        dans le cadre du master modélisation statistiques de l'Université De Franche Comté."),
+                     h5("Bienvenue au CUB, nous fournissons à nos clients des solutions de crédit immobilier pour l'achat
+              de leurs biens immobiliers.",br()," Vous trouverez sur notre site un simulateur de crédit immobilier et un indicateur
               qui vous permettera de savoir s'il est possible de demander un crédit ou s'il sera refusé
-              automatiquement."),
+              automatiquement : le score emprunteur.")
+                     )#end column
+              )#end fluidrow
+            
+            ),#end navpanel Accueil
+  nav_panel(title  = "Questionnaire",
             p("Veuillez saisir les informations concernant l'emprunteur principal"),
             fluidRow(
-              
               column( width = 10,
+                      div(class = "slider-custom",
+                          sliderInput("age", label = "Age", min = 18, max = 65, value = 35)),
                       
-              div(class = "slider-custom",
-                  sliderInput("age", label = "Age", min = 18, max = 65, value = 35)),
-              
-              radioButtons("cig","Êtes vous fumeur ?",choices=c("Quotidiennement","Occasionnellement","Non")),
-              
-              radioButtons("sport","Faites vous du sport?",choices=c("Quotidiennement","Occasionnellement","Non")),
-              
-              radioButtons("mal","Avez vous des maladies chroniques ?",choices=c("Oui","Non")),
-              
-              radioButtons("trav","Quel est votre facteur de pénibilité au travail",choices=c("Fort (Serveur,travail en chantier)","Moyen (Travail debout,)","Faible (Bureau, travail assis)")),
-              
-              radioButtons("hand","Avez vous un handicap ?",choices=c("Oui","Non")),
-              
-              radioButtons("mari","Situation maritale",choices=c("Marié/Pacse","Célibataire"))
-              
-              ),#end column,
-              
-              column(width=2,
-                     
-                     textOutput(outputId = "score")
-                     
-                     )
-              )#end Row questionaire
-            ),#end navpanel Accueil
+                      radioButtons("cig","Êtes vous fumeur ?",choices=c("Quotidiennement","Occasionnellement","Non")),
+                      
+                      radioButtons("sport","Faites vous du sport?",choices=c("Quotidiennement","Occasionnellement","Non")),
+                      
+                      radioButtons("mal","Avez vous des maladies chroniques ?",choices=c("Oui","Non")),
+                      
+                      radioButtons("trav","Quel est votre facteur de pénibilité au travail",choices=c("Fort (Serveur,travail en chantier)","Moyen (Travail debout,)","Faible (Bureau, travail assis)")),
+                      
+                      radioButtons("hand","Avez vous un handicap ?",choices=c("Oui","Non")),
+                      
+                      radioButtons("mari","Situation maritale",choices=c("Marié/Pacse","Célibataire"))
+                      
+              ),#end column
+              column(width=2,textOutput(outputId = "score")
+              )
+            )#end Row questionaire
+            ),
     
   nav_panel(title = "Simulateur de crédit immobilier",
     # Cellule pour que l'utilisateur puisse ajouter le montant de son emprunt
@@ -203,7 +205,7 @@ server <- function(input, output) {
                                         montant_frais())
                                         })#end rendertable
   
-output$score<-renderText(glue("Score emprunteur : ",score_emprunteur(input$duree_cred,
+output$score<-renderText(glue("Score emprunteur (/100) : ",round(score_emprunteur(input$duree_cred,
                                                  input$taux_int/100,
                                                  input$taux_ass/100,
                                                  input$montant_proj,
@@ -217,7 +219,8 @@ output$score<-renderText(glue("Score emprunteur : ",score_emprunteur(input$duree
                                                  input$mal,
                                                  input$trav,
                                                  input$hand,
-                                                 input$mari)))#end render print
+                                                 input$mari),2)))#end render print
+  
   output$cout_total <- renderText(glue("Cout total : ",CoutTotal(input$duree_cred,
                                                                                            input$taux_int/100,
                                                                                            input$taux_ass/100,
