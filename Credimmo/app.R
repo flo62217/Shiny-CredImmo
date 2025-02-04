@@ -16,6 +16,7 @@ library(roxygen2)
 library(shiny)
 library(styler)
 library(shinydashboard)
+library(shinydashboardPlus)
 library(shinyWidgets)
 
 #Potentiellement meilleur rendus de tableau 
@@ -28,7 +29,23 @@ source("fonctions/CoutTotal.R", local=TRUE)
 
 # Definie l'UI d'affichage
 ui <- fluidPage(
-  
+  tags$head(
+    tags$style(HTML("
+        .custom-valuebox .info-box-content {
+          font-size: 14px; /* Taille du texte global */
+        }
+        .custom-valuebox .info-box-text {
+          color: #000000; /* Couleur du subtitle */
+          font-size: 16px; /* Taille du subtitle */
+          font-weight: bold; /* Met le subtitle en gras */
+        }
+        .custom-valuebox .info-box-number {
+          color: #000000; /* Couleur de la valeur */
+          font-size: 24px; /* Taille de la valeur */
+          font-weight: bold;
+        }
+      "))
+  ),
   includeCSS("www/style.css"),
   
   fluidRow(
@@ -97,9 +114,14 @@ ui <- fluidPage(
     fluidRow(
       column(width = 2,wellPanel(
         fluidRow(
-        column(12, valueBoxOutput(outputId = "cout_total")),
-        column(12, valueBoxOutput(outputId = "score"))
-        ),#end fluidrow
+          div(
+            class = "custom-valuebox",
+            valueBoxOutput(outputId = "cout_total")),
+          div(
+            class = "custom-valuebox",
+            valueBoxOutput(outputId = "score")
+            )
+          ),
              
             numericInput(inputId = "montant_proj", label = "Montant du bien", value = 150000),
     
@@ -130,7 +152,6 @@ ui <- fluidPage(
     ,column(width = 10,dataTableOutput("tableau_amortissement")
             )#End column Tableau amortissement
     )#EndFluidRow
-    
   ),# end navpanel Simulateur 
   nav_panel(title = "Graphique",
             dashboardPage(skin = "black",
@@ -221,7 +242,10 @@ output$score<-renderValueBox({valueBox(value = round(score_emprunteur(input$dure
                                                  input$mal,
                                                  input$trav,
                                                  input$hand,
-                                                 input$mari),2),subtitle = "Score emprunteur (/100)",color = "blue")}
+                                                 input$mari),2),
+                                       subtitle = "Score emprunteur (/100)",
+                                       color = couleur_score(),
+                                       width = 12)}
                              )#end rendervalueBox
   
   output$cout_total <- renderValueBox({valueBox(value = round(CoutTotal(input$duree_cred,
@@ -231,7 +255,10 @@ output$score<-renderValueBox({valueBox(value = round(score_emprunteur(input$dure
                                                         montant_apport(),
                                                         rev_emp_1(),
                                                         rev_emp_2=rev_emp_2(),
-                                                        montant_frais()),0),subtitle = "Coût total du crédit",color = "red")}
+                                                        montant_frais()),0),
+                                                subtitle = "Coût total du crédit",
+                                                color = "red",
+                                                width = 12)}
                                    )#end renderValueBox
   
 
