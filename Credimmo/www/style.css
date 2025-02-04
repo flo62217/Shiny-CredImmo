@@ -18,3 +18,8 @@ body {
   border-color: black;
   color: black;
 }
+.btn-radio{
+  color: #fff;
+  background-color: grey;
+  border-color: grey;
+}

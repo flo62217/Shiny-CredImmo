@@ -16,6 +16,7 @@ library(roxygen2)
 library(shiny)
 library(styler)
 library(shinydashboard)
+library(shinyWidgets)
 
 #Potentiellement meilleur rendus de tableau 
 #Source
@@ -77,17 +78,17 @@ ui <- fluidPage(
                       div(class = "slider-custom",
                           sliderInput("age", label = "Age", min = 18, max = 65, value = 35)),
                       
-                      radioButtons("cig","Êtes vous fumeur ?",choices=c("Quotidiennement","Occasionnellement","Non")),
+                      radioGroupButtons("cig","Êtes vous fumeur ?",choices=c("Quotidiennement","Occasionnellement","Non"), status = "radio"),
                       
-                      radioButtons("sport","Faites vous du sport?",choices=c("Quotidiennement","Occasionnellement","Non")),
+                      radioGroupButtons("sport","Faites vous du sport?",choices=c("Quotidiennement","Occasionnellement","Non"), status = "radio"),
                       
-                      radioButtons("mal","Avez vous des maladies chroniques ?",choices=c("Oui","Non")),
+                      radioGroupButtons("mal","Avez vous des maladies chroniques ?",choices=c("Oui","Non"), status = "radio"),
                       
-                      radioButtons("trav","Quel est votre facteur de pénibilité au travail",choices=c("Fort (Serveur,travail en chantier)","Moyen (Travail debout,)","Faible (Bureau, travail assis)")),
+                      radioGroupButtons("trav","Quel est votre facteur de pénibilité au travail",choices=c("Fort (Serveur,travail en chantier)","Moyen (Travail debout,)","Faible (Bureau, travail assis)"), status = "radio"),
                       
-                      radioButtons("hand","Avez vous un handicap ?",choices=c("Oui","Non")),
+                      radioGroupButtons("hand","Avez vous un handicap ?",choices=c("Oui","Non"), status = "radio"),
                       
-                      radioButtons("mari","Situation maritale",choices=c("Marié/Pacse","Célibataire"))
+                      radioGroupButtons("mari","Situation maritale",choices=c("Marié/Pacse","Célibataire"), status = "radio")
               ),#end column
             )#end Row questionaire
             ),
