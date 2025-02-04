@@ -132,7 +132,7 @@ ui <- fluidPage(
     
   ),# end navpanel Simulateur 
   nav_panel(title = "Graphique",
-            dashboardPage(
+            dashboardPage(skin = "black",
               dashboardHeader(title = "Votre emprunt"),
               dashboardSidebar(),
               dashboardBody(
