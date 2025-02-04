@@ -132,11 +132,18 @@ ui <- fluidPage(
     
   ),# end navpanel Simulateur 
   nav_panel(title = "Graphique",
-            fluidRow(
-              column(width = 6,plotOutput('plot_interet')),#End column
-              column(width = 6,plotOutput('plot_restant'))
+            dashboardPage(
+              dashboardHeader(title = "Votre emprunt"),
+              dashboardSidebar(),
+              dashboardBody(
+              fluidRow(
+                column(width = 6,plotOutput('plot_interet')),#End column
+                column(width = 6,plotOutput('plot_restant')),
+                valueBoxOutput("scoreBox")
               )#End FluidRow Panneau
-            )# End navpanel graphique
+            )#End dashboardBody
+          )# End dashboardPage
+  )#End navpanel graphique
   
   
   ),#end navsetunderline
@@ -278,6 +285,47 @@ output$score<-renderValueBox({valueBox(value = round(score_emprunteur(input$dure
         labs(x = "Temps", y = "Montant", title = "Evolution du pourcentage d'intérêt payés en fonction du temps")
     }#End if
       })# end output plot_interet
+  couleur_score <- reactive({
+    score_test <- round(score_emprunteur(input$duree_cred,
+                                  input$taux_int/100,
+                                  input$taux_ass/100,
+                                  input$montant_proj,
+                                  montant_apport(),
+                                  rev_emp_1(),
+                                  rev_emp_2=rev_emp_2(),
+                                  montant_frais(),
+                                  input$age,
+                                  input$cig,
+                                  input$sport,
+                                  input$mal,
+                                  input$trav,
+                                  input$hand,
+                                  input$mari),2)
+    if (score_test>60)
+      {"green"}
+    else if (score_test<30)
+      {"red"}
+    else
+      {"yellow"}
+    })
+  output$scoreBox <- renderValueBox({
+    valueBox(
+      value = round(score_emprunteur(input$duree_cred,
+                                     input$taux_int/100,
+                                     input$taux_ass/100,
+                                     input$montant_proj,
+                                     montant_apport(),
+                                     rev_emp_1(),
+                                     rev_emp_2=rev_emp_2(),
+                                     montant_frais(),
+                                     input$age,
+                                     input$cig,
+                                     input$sport,
+                                     input$mal,
+                                     input$trav,
+                                     input$hand,
+                                     input$mari),2),subtitle = "Score emprunteur (/100)",color = couleur_score(), icon = icon("thumbs-up", lib = "glyphicon"))
+  })
 
 }#end server
 
