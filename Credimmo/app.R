@@ -14,10 +14,11 @@ library(glue)
 library(htmltools)
 library(roxygen2)
 library(shiny)
-library(styler)
+library(shinyalert)
 library(shinydashboard)
 library(shinydashboardPlus)
 library(shinyWidgets)
+library(styler)
 
 #Potentiellement meilleur rendus de tableau 
 #Source
@@ -228,7 +229,7 @@ server <- function(input, output) {
                                         montant_frais())
                                         })#end rendertable
   
-output$score<-renderValueBox({valueBox(value = round(score_emprunteur(input$duree_cred,
+output$score<-renderValueBox({valueBox(value = score_emprunteur(input$duree_cred,
                                                  input$taux_int/100,
                                                  input$taux_ass/100,
                                                  input$montant_proj,
@@ -242,20 +243,20 @@ output$score<-renderValueBox({valueBox(value = round(score_emprunteur(input$dure
                                                  input$mal,
                                                  input$trav,
                                                  input$hand,
-                                                 input$mari),2),
+                                                 input$mari),
                                        subtitle = "Score emprunteur (/100)",
                                        color = couleur_score(),
                                        width = 12)}
                              )#end rendervalueBox
   
-  output$cout_total <- renderValueBox({valueBox(value = round(CoutTotal(input$duree_cred,
+  output$cout_total <- renderValueBox({valueBox(value = CoutTotal(input$duree_cred,
                                                         input$taux_int/100,
                                                         input$taux_ass/100,
                                                         input$montant_proj,
                                                         montant_apport(),
                                                         rev_emp_1(),
                                                         rev_emp_2=rev_emp_2(),
-                                                        montant_frais()),0),
+                                                        montant_frais()),
                                                 subtitle = "Coût total du crédit",
                                                 color = "red",
                                                 width = 12)}
@@ -314,7 +315,7 @@ output$score<-renderValueBox({valueBox(value = round(score_emprunteur(input$dure
     }#End if
       })# end output plot_interet
   couleur_score <- reactive({
-    score_test <- round(score_emprunteur(input$duree_cred,
+    score_test <- score_emprunteur(input$duree_cred,
                                   input$taux_int/100,
                                   input$taux_ass/100,
                                   input$montant_proj,
@@ -328,8 +329,11 @@ output$score<-renderValueBox({valueBox(value = round(score_emprunteur(input$dure
                                   input$mal,
                                   input$trav,
                                   input$hand,
-                                  input$mari),2)
-    if (score_test>60)
+                                  input$mari)
+    if(is.character(score_test)){
+      "red"
+    }
+    else if (score_test>60)
       {"green"}
     else if (score_test<30)
       {"red"}
@@ -338,7 +342,7 @@ output$score<-renderValueBox({valueBox(value = round(score_emprunteur(input$dure
     })
   output$scoreBox <- renderValueBox({
     valueBox(
-      value = round(score_emprunteur(input$duree_cred,
+      value = score_emprunteur(input$duree_cred,
                                      input$taux_int/100,
                                      input$taux_ass/100,
                                      input$montant_proj,
@@ -352,9 +356,16 @@ output$score<-renderValueBox({valueBox(value = round(score_emprunteur(input$dure
                                      input$mal,
                                      input$trav,
                                      input$hand,
-                                     input$mari),2),subtitle = "Score emprunteur (/100)",color = couleur_score(), icon = icon("thumbs-up", lib = "glyphicon"))
+                                     input$mari),subtitle = "Score emprunteur (/100)",color = couleur_score(), icon = icon("thumbs-up", lib = "glyphicon"))
   })
-
+  observeEvent(input$rev_emp_1,
+          {if(is.na(input$rev_emp_1)){}
+          else if (input$rev_emp_1 < 0){
+            shinyalert(title="Erreur de revenu", text = "Le revenu de l'emprunteur principal ne peut être négatif", type="error", animation = TRUE)}})
+  observeEvent(input$rev_emp_2,
+          {if(is.na(input$rev_emp_2)){}
+          else if (input$rev_emp_2 < 0){
+            shinyalert(title="Erreur de revenu", text = "Le revenu du second emprunteur ne peut être négatif", type="error", animation = TRUE)}})
 }#end server
 
 # Run the application 

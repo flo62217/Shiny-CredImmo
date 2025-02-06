@@ -39,7 +39,7 @@ score_emprunteur <- function(duree_cred,
                            handicap,
                            marital){
   if(duree_cred<=0 || taux_int<0 || taux_ass<0 || montant_apport<0 || montant_proj<0 ||
-     rev_emp_1<0 || rev_emp_2<0 || montant_frais<0){
+     rev_emp_1<0 || rev_emp_2<0 || montant_frais<0 || is.na(rev_emp_1) || rev_emp_1 == ""){
     print("vérifiez les entrées")
   }#end if
   else{
@@ -62,7 +62,7 @@ score_emprunteur <- function(duree_cred,
     score_marital <- 6*as.integer(marital == "Marié/Pacse")
     score_penible <- 7*as.integer(travail == "Faible (Bureau, travail assis)")-5*as.integer(travail == "Fort (Serveur,travail en chantier)")+3*as.integer(travail == "Moyen (Travail debout,)")
     score <- score_revenu+score_age+score_sport+score_maladie+score_cigarette+score_handicap+score_marital+score_penible
-    score
+    round(score,2)
     #taux_end
   }# end else
 }#end function

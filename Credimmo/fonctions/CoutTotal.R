@@ -51,6 +51,6 @@ CoutTotal <- function(duree_cred,
       sum()
     cout_total <- cout_total_assurance + cout_total_interet+montant_frais
     ##sortie
-    cout_total
+    round(cout_total,0)
   }#end else
 }#end function
