@@ -113,14 +113,12 @@ ui <- fluidPage(
     
   nav_panel(title = "Simulateur de crédit immobilier",
     fluidRow(
-      column(width = 2,wellPanel(
+      column(width = 2, wellPanel(
         fluidRow(
           div(
             class = "custom-valuebox",
-            valueBoxOutput(outputId = "cout_total")),
-          div(
-            class = "custom-valuebox",
-            valueBoxOutput(outputId = "score")
+            valueBoxOutput(outputId = "cout_total", width = 12),
+            valueBoxOutput(outputId = "score", width = 12)
             )
           ),
              
