@@ -23,3 +23,7 @@ body {
   background-color: grey;
   border-color: grey;
 }
+.btn.active{
+  background-color:lightgrey;
+  color:black;
+}
