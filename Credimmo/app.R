@@ -45,6 +45,10 @@ ui <- fluidPage(
           font-size: 24px; /* Taille de la valeur */
           font-weight: bold;
         }
+          .justified-text {
+                      text-align: justify;
+        }
+        
       "))
   ),
   includeCSS("www/style.css"),
@@ -80,11 +84,19 @@ ui <- fluidPage(
                      h2("Collaborateurs : "),
                      h3("Antoine Genin, Florian Bucquet, Lucas Debauche"),
                      h4("Projet pour l'unité de R avancé supervisée par A. de Moliner, réalisé 
-                        dans le cadre du master modélisation statistiques de l'Université De Franche Comté."),
-                     h5("Bienvenue au CUB, nous fournissons à nos clients des solutions de crédit immobilier pour l'achat
+                        dans le cadre du master modélisation statistiques de l'Université De Franche Comté.",br(),br()),
+                     h5(class = "justified-text","Bienvenue au CUB, nous fournissons à nos clients des solutions de crédit immobilier pour l'achat
               de leurs biens immobiliers.",br()," Vous trouverez sur notre site un simulateur de crédit immobilier et un indicateur
               qui vous permettera de savoir s'il est possible de demander un crédit ou s'il sera refusé
-              automatiquement : le score emprunteur.")
+              automatiquement. Si l'indicateur est Vert alors l'emprunt est accepté, si il est rouge il est refusé, enfin si il est orange,il va falloir présenter votre projet aux différents collaborateurs afin de voir si il est vraiment viable.",br(),br()),
+                     h5(class = "justified-text","Voici les différentes données demandées :",br(),br(),
+                     br(),"- Montant du bien : C'est le prix du bien immobilier",
+                     br(),"- Montant de l'apport : C'est la somme d'argent que vous possédez et que vous voulez utiliser pour l'achat.Il sera déduit du prix du bien.",
+                     br(),"- Durée du crédit : C'est la durée pendant laquelle vous allez avoir des mensualités à payer.",
+                     br(),"- Taux d'intérêt : C'est un pourcentage du reste de votre crédit chaque mois que vous devez payer en plus du remboursement du prêt.",
+                     br(),"- Taux d'assurance : C'est un pourcentage du crédit que vous payez chaque mois en plus des intérêts, il permet par exemple selon les contrats de rembourser le crédit en cas de décès de l'emprunteur ou de pouvoir stopper les mensualités en cas licenciement.",
+                     br(),"- Revenu: C'est votre revenu mensuel net, les primes et prestations en nature (voiture de fonction, carte de restaurant) ne sont pas prises en compte",
+                     br(),"- Montant des frais de dossier: C'est le prix des différents frais qu'engendre l'acquisition d'un bien immobilier, notamment les frais de notaire et frais d'agence. Ce montant peut aller de 5 à 10% du prix du bien en fonction des prestataires")
                      )#end column
               )#end fluidrow
             
@@ -339,22 +351,33 @@ output$score<-renderValueBox({valueBox(value = score_emprunteur(input$duree_cred
       {"yellow"}
     })
   output$scoreBox <- renderValueBox({
+    
+    score_test <- score_emprunteur(input$duree_cred,
+                                   input$taux_int/100,
+                                   input$taux_ass/100,
+                                   input$montant_proj,
+                                   montant_apport(),
+                                   rev_emp_1(),
+                                   rev_emp_2=rev_emp_2(),
+                                   montant_frais(),
+                                   input$age,
+                                   input$cig,
+                                   input$sport,
+                                   input$mal,
+                                   input$trav,
+                                   input$hand,
+                                   input$mari)
+    if(is.character(score_test)){
+      icone = icon("remove-sign", lib = "glyphicon")
+    }
+    else if (score_test>60)
+    {icone = icon("ok-sign", lib = "glyphicon")}
+    else if (score_test<30)
+    {icone = icon("remove-sign", lib = "glyphicon")}
+    else
+    {icone = icon("question-sign", lib = "glyphicon")}
     valueBox(
-      value = score_emprunteur(input$duree_cred,
-                                     input$taux_int/100,
-                                     input$taux_ass/100,
-                                     input$montant_proj,
-                                     montant_apport(),
-                                     rev_emp_1(),
-                                     rev_emp_2=rev_emp_2(),
-                                     montant_frais(),
-                                     input$age,
-                                     input$cig,
-                                     input$sport,
-                                     input$mal,
-                                     input$trav,
-                                     input$hand,
-                                     input$mari),subtitle = "Score emprunteur (/100)",color = couleur_score(), icon = icon("thumbs-up", lib = "glyphicon"))
+      value = score_test,subtitle = "Score emprunteur (/100)",color = couleur_score(), icon = icone)
   })
   observeEvent(input$rev_emp_1,
           {if(is.na(input$rev_emp_1)){}
