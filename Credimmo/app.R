@@ -266,6 +266,7 @@ output$score<-renderValueBox({valueBox(value = score_emprunteur(input$duree_cred
                                           rev_emp_1(),
                                           rev_emp_2=rev_emp_2(),
                                           montant_frais()), file, row.names = FALSE)
+      shinyalert(title = "Téléchargement effectué", text = "Le fichier a été téléchargé !", type = "success", animation = TRUE)
     }
   )#end download_table
   
