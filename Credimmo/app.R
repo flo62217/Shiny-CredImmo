@@ -30,41 +30,23 @@ source("fonctions/CoutTotal.R", local=TRUE)
 
 # Definie l'UI d'affichage
 ui <- fluidPage(
+  theme = bs_theme(),
   tags$head(
-    tags$style(HTML("
-        .custom-valuebox .info-box-content {
-          font-size: 14px; /* Taille du texte global */
-        }
-        .custom-valuebox .info-box-text {
-          color: #000000; /* Couleur du subtitle */
-          font-size: 16px; /* Taille du subtitle */
-          font-weight: bold; /* Met le subtitle en gras */
-        }
-        .custom-valuebox .info-box-number {
-          color: #000000; /* Couleur de la valeur */
-          font-size: 24px; /* Taille de la valeur */
-          font-weight: bold;
-        }
-          .justified-text {
-                      text-align: justify;
-        }
-        
-      "))
+    tags$link(rel="stylesheet", type="text/css", href="style.css"),
   ),
-  includeCSS("www/style.css"),
   
   fluidRow(
     
     column(
       
       width = 1,  #Prend 1/12 de la page
-      img(src = "images/Logo CUB.png", width = "100px", height = "100px")
+      img(src = "images/Logo CUB.png", width = "100px", height = "100px"),
       
     ),#end column logo
     
     column(
       
-      width = 11,  #Prend 11/12 restant
+      width = 10,  #Prend 10/12 de la page
       
       div(
         #Titre du document et titre de l'onglet (windowTitle)
@@ -72,8 +54,10 @@ ui <- fluidPage(
         style = "display: inline-block; vertical-align: top; margin-left: 10px;"
       )#end div
       
-    )#end column div
-    
+    ),#end column div
+    column(width=1,
+           bslib::input_dark_mode(),
+           bslib::input_switch("lang", "Traduire", FALSE))#end column boutons
   ),#end fluid row en tête
   
   navset_tab(
@@ -183,7 +167,6 @@ ui <- fluidPage(
   
 id = "navigator",
 fluid = TRUE,
-bg = "#D3D6CF",
 widths = 20
 
 )#end ui
@@ -387,6 +370,10 @@ output$score<-renderValueBox({valueBox(value = score_emprunteur(input$duree_cred
           {if(is.na(input$rev_emp_2)){}
           else if (input$rev_emp_2 < 0){
             shinyalert(title="Erreur de revenu", text = "Le revenu du second emprunteur ne peut être négatif", type="error", animation = TRUE)}})
+  observeEvent(input$lang,
+               {if(input$lang){
+               shinyalert(title="Fonctionnalité indisponible", text = "Cette fonctionnalité n'est pas disponible", type="error", animation = TRUE)
+                update_switch("lang", value=FALSE)}})
 }#end server
 
 # Run the application 

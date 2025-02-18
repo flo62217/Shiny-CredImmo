@@ -1,22 +1,44 @@
+[data-bs-theme="light"] {
+  --text-color: #222222; /*Couleur du texte en mode clair*/
+  --bs-body-bg:#D3D6CF !important;
+}
+
+[data-bs-theme="dark"] {
+  --bs-body-bg: #868778 !important;
+  --text-color: black; /* Couleur du texte en mode sombre*/
+  --bs-light-text-emphasis: black;
+  --bs-dark-text-emphasis: black;
+  --bs-emphasis-color-rgb: 0, 0, 0;
+  --bs-emphasis-color: black;
+}
+
 body {
-  background-color: #D3D6CF; /* Couleur du fond de la page */
+  background-color: var(--bs-body-bg); /* Couleur du fond de la page */
+  color: var(--text-color);
 }
 .slider-custom .irs-bar {
   background: lightgrey;
   border-color: black;
+  color: var(--text-color);
 }
 .slider-custom .irs-slider {
   background: lightgrey;
   border-color: black;
+  color: var(--text-color);
 }
 .slider-custom .irs-handle {
   background-color: lightgrey;
   border-color: black;
+  color: var(--text-color);
 }
 .slider-custom .irs-single{
   background-color: lightgrey;
   border-color: black;
   color: black;
+}
+
+.slider-custom .irs-line{
+  color: var(--text-color);
 }
 .btn-radio{
   color: #fff;
@@ -26,4 +48,21 @@ body {
 .btn.active{
   background-color:lightgrey;
   color:black;
+}
+
+.custom-valuebox .info-box-content {
+  font-size: 14px; /* Taille du texte global */
+}
+.custom-valuebox .info-box-text {
+  color: #000000; /* Couleur du subtitle */
+  font-size: 16px; /* Taille du subtitle */
+  font-weight: bold; /* Met le subtitle en gras */
+}
+.custom-valuebox .info-box-number {
+  color: #000000; /* Couleur de la valeur */
+  font-size: 24px; /* Taille de la valeur */
+  font-weight: bold;
+}
+.justified-text {
+  text-align: justify;
 }
