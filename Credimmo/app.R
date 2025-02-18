@@ -156,6 +156,7 @@ ui <- fluidPage(
               fluidRow(
                 column(width = 6,plotOutput('plot_interet')),#End column
                 column(width = 6,plotOutput('plot_restant')),
+                column(width = 3,plotOutput('plot_part')),
                 valueBoxOutput("scoreBox")
               )#End FluidRow Panneau
             )#End dashboardBody
@@ -288,6 +289,34 @@ output$score<-renderValueBox({valueBox(value = score_emprunteur(input$duree_cred
       labs(x = "Temps", y = "Montant", title = "Evolution du remboursement au fil du temps")
     })#end output plot_restant
 
+  output$plot_part <-renderPlot({
+    dt<-CreerTableauAmortissement(input$duree_cred,
+                                  input$taux_int/100,
+                                  input$taux_ass/100,
+                                  input$montant_proj,
+                                  montant_apport(),
+                                  rev_emp_1(),
+                                  rev_emp_2=rev_emp_2(),
+                                  montant_frais())
+    rest_avec<-(dt %>% select(`Restant dû (Avec intérêt)`))[1,]
+    rest_sans<-(dt %>% select(`Restant dû (Sans intérêt)`))[1,]
+    part_int <- ((rest_avec-rest_sans)/rest_avec)
+    part_proj <- (rest_sans/rest_avec)
+    df_part <- data.frame(Part=c("intérêt","projet"),values = cumsum(c(part_int,part_proj)), ymin=c(0,cumsum(c(part_int,part_proj))[1]))
+    df_part$labelPosition <- (df_part$values + df_part$ymin) / 2
+    df_part$percent <- c(round(part_int,3),round(part_proj,3))
+    df_part$label <- paste0(df_part$Part, "\n valeur: ", df_part$percent*100,"%")
+    ggplot(data=df_part,aes(xmax=4,xmin=3,ymin=ymin,ymax=values,fill=Part))+
+      geom_rect() +
+      geom_label(x=3.5, aes(y=labelPosition, label=label), size=6)+
+      coord_polar(theta="y")+
+      scale_fill_brewer(palette=3)+
+      xlim(c(2, 4))+
+      theme_void()+
+      labs(title = "Part de l'intérêt dans le remboursement")+
+      theme(legend.position = "none")
+  })#end output plot_part
+  
   output$plot_interet <-renderPlot({
     dt<-CreerTableauAmortissement(input$duree_cred,
                                   input$taux_int/100,
